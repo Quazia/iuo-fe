@@ -2,8 +2,52 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+import { useWriteContract, useWaitForTransactionReceipt, useConfig, useAccount } from 'wagmi';
+import { governanceTokenAbi } from '../abi/governanceToken';
+import { myNFTCollectionAbi } from '../abi/myNFTCollection';
+import { GOVERNANCE_TOKEN_ADDRESS, MY_NFT_COLLECTION_ADDRESS } from '../constants/addresses';
+import { parseEther, toHex } from 'viem';
 
 const Home: NextPage = () => {
+  const { address } = useAccount();
+  const config = useConfig();
+  console.log(config);
+  const { writeContract, data: hash, isPending: isWritePending } = useWriteContract();
+
+  console.log("mounting");
+  console.log("isWritePending: ", isWritePending);
+
+
+  const handleMint = async () => {
+    if (!address) return;
+    console.log("inside handleMint");
+    console.log("isWritePending: ", isWritePending);
+    console.log("abi: ", myNFTCollectionAbi);
+    console.log("address: ", MY_NFT_COLLECTION_ADDRESS);
+
+    try {
+      writeContract({
+        address: MY_NFT_COLLECTION_ADDRESS,
+        abi: myNFTCollectionAbi,
+        functionName: 'mint',
+        args: [
+          BigInt(1)// amount (1 token with 18 decimals)
+        ],
+        value: parseEther('0.005'),
+      })
+      console.log('Transaction initiated:');
+      console.log("hash: ", hash);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  const buttonText = isWritePending 
+    ? 'Confirm in Wallet...' 
+    : (hash && isWritePending) 
+      ? 'Minting...' 
+      : 'Mint NFT';
+
   return (
     <div className={styles.container}>
       <Head>
@@ -17,6 +61,15 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <ConnectButton />
+
+        <button 
+          onClick={handleMint}
+          disabled={isWritePending}
+          className={styles.button}
+        >
+          {buttonText}
+        </button>
+
 
         <h1 className={styles.title}>
           Welcome to Initial Usage Offering
