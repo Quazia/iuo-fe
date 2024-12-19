@@ -2,7 +2,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
-import { useWriteContract, useAccount, useReadContract } from 'wagmi';
+import { useWriteContract, useAccount, useReadContract, useWaitForTransactionReceipt } from 'wagmi';
 import { myNFTCollectionAbi } from '../abi/myNFTCollection';
 import { revTokenAbi } from '../abi/revToken';
 import { MY_NFT_COLLECTION_ADDRESS, REV_TOKEN_ADDRESS } from '../constants/addresses';
@@ -29,26 +29,34 @@ const ActionCard = ({ title, children, price, info, balance }: {
 
 const Home: NextPage = () => {
   const { address } = useAccount();
-  const { writeContract, isPending } = useWriteContract();
+  const { writeContract, data: hash } = useWriteContract();
+  const { isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
   const [rewards, setRewards] = useState<string>('0');
 
-  const { data: nftBalance } = useReadContract({
+  const { data: nftBalance, refetch: refetchNFTBalance } = useReadContract({
     address: MY_NFT_COLLECTION_ADDRESS,
     abi: myNFTCollectionAbi,
     functionName: 'balanceOf',
     args: address ? [address, BigInt(1)] : undefined,
     enabled: !!address,
-    watch: true,
   });
 
-  const { data: withdrawableRewards } = useReadContract({
+  const { data: withdrawableRewards, refetch: refetchRewards } = useReadContract({
     address: REV_TOKEN_ADDRESS,
     abi: revTokenAbi,
     functionName: 'withdrawableDividendOf',
     args: address ? [address] : undefined,
     enabled: !!address,
-    watch: true,
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetchNFTBalance();
+      refetchRewards();
+    }
+  }, [isSuccess]);
 
   useEffect(() => {
     console.log('withdrawableRewards', withdrawableRewards);
@@ -102,7 +110,6 @@ const Home: NextPage = () => {
           >
             <button 
               onClick={handleMint}
-              disabled={isPending}
               className={styles.button}
             >
               MINT
@@ -110,8 +117,8 @@ const Home: NextPage = () => {
           </ActionCard>
 
           <ActionCard 
-            title="IUO Gov tokens" 
-            info="Free - receive 10 Gov tokens"
+            title="IUO Rev tokens" 
+            info="Free - receive 10 Rev tokens"
           >
             <button className={styles.button}>
               CLAIM BOOST
