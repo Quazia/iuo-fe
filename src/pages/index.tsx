@@ -39,16 +39,14 @@ const Home: NextPage = () => {
     address: MY_NFT_COLLECTION_ADDRESS,
     abi: myNFTCollectionAbi,
     functionName: 'balanceOf',
-    args: address ? [address, BigInt(1)] : undefined,
-    enabled: !!address,
+    args: address ? [address, BigInt(1)] : undefined
   });
 
   const { data: withdrawableRewards, refetch: refetchRewards } = useReadContract({
     address: REV_TOKEN_ADDRESS,
     abi: revTokenAbi,
     functionName: 'withdrawableDividendOf',
-    args: address ? [address] : undefined,
-    enabled: !!address,
+    args: address ? [address] : undefined
   });
 
   useEffect(() => {
@@ -110,6 +108,7 @@ const Home: NextPage = () => {
           >
             <button 
               onClick={handleMint}
+              
               className={styles.button}
             >
               MINT
