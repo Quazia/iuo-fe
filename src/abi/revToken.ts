@@ -1,5 +1,4 @@
-export const governanceTokenAbi = [
-  // ... ABI content ...
+export const revTokenAbi = [
   {
     type: "constructor",
     inputs: [
@@ -87,7 +86,7 @@ export const governanceTokenAbi = [
   },
   {
     type: "function",
-    name: "mintGovernanceTokens",
+    name: "mintRevTokens",
     inputs: [
       { name: "to", type: "address", internalType: "address" },
       { name: "amount", type: "uint256", internalType: "uint256" },
