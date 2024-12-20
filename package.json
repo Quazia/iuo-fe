@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "deploy-budget": "ts-node --project tsconfig.json src/scripts/deployBudget.ts"
   },
   "dependencies": {
     "@boostxyz/sdk": "^5.2.0",
@@ -13,6 +14,7 @@
     "@tanstack/react-query": "^5.55.3",
     "@wagmi/connectors": "^5.7.0",
     "@wagmi/core": "^2.16.0",
+    "ethers": "^6.13.4",
     "next": "^14.2.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -23,6 +25,9 @@
     "@types/node": "^20.14.8",
     "@types/react": "^18.3.5",
     "eslint": "^9.17.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "5.5.2"
-  }
+  },
+  "type": "module"
 }
