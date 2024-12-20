@@ -6,5 +6,5 @@ export const config = createConfig({
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(process.env.BASE_SEPOLIA_RPC_URL),
-  },
+  }
 })

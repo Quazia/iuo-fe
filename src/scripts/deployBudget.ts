@@ -5,7 +5,11 @@ import { config } from "./config"
 
 const core = new BoostCore({ config })
 const registry = new BoostRegistry({ config })
-
+const account = {
+    privateKey: process.env.PRIVATE_KEY as `0x${string}`,
+    address: process.env.WALLET_ADDRESS as `0x${string}`,
+  }
+  
 async function main() {
   try {
     console.log('Deploying budget account...')
@@ -13,8 +17,8 @@ async function main() {
     const budget = await registry.initialize(
       "MyBoostBudget",
       core.ManagedBudget({
-        owner: process.env.WALLET_ADDRESS as `0x${string}`,
-        authorized: [process.env.WALLET_ADDRESS as `0x${string}`, core.assertValidAddress()],
+        owner: account.address,
+        authorized: [account.address, core.assertValidAddress()],
         roles: [Roles.ADMIN, Roles.MANAGER],
       })
     )
