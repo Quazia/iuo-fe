@@ -9,11 +9,12 @@ const account = {
     privateKey: process.env.PRIVATE_KEY as `0x${string}`,
     address: process.env.WALLET_ADDRESS as `0x${string}`,
   }
-  
+
 async function main() {
   try {
     console.log('Deploying budget account...')
     
+    /* DOCS CODE
     const budget = await registry.initialize(
       "MyBoostBudget",
       core.ManagedBudget({
@@ -21,7 +22,12 @@ async function main() {
         authorized: [account.address, core.assertValidAddress()],
         roles: [Roles.ADMIN, Roles.MANAGER],
       })
-    )
+    )*/
+    const budget = await core.ManagedBudget({
+        owner: account.address,
+        authorized: [account.address, core.assertValidAddress()],
+        roles: [Roles.ADMIN, Roles.MANAGER],
+    });
 
     const budgetAddress = budget.assertValidAddress()
     console.log('Budget deployed at:', budgetAddress)
